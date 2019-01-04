@@ -58,6 +58,21 @@ namespace SuperAwesomeRaptorRacingGame_Backend.Controllers
           //  return Ok(score);
         }
 
+        [HttpGet]
+        public IActionResult getScoresByUserId([FromBody] UserDto userDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            // map dto to entity
+
+            var scores = _scoreService.GetScoresForUser(userDto.UserId);
+            return Ok(scores);
+        }
+
+
 
 
         // POST: api/Scores
@@ -72,14 +87,11 @@ namespace SuperAwesomeRaptorRacingGame_Backend.Controllers
 
             // map dto to entity
             var score = _mapper.Map<Score>(scoreDto);
-
+            var user = _userService.GetById(scoreDto.UserId);
+            score.User = user;
             _scoreService.AddScore(score);
-            // var user = _context.Users.Where(u => u.UserId == scoreDto.UserId);
-
-            // _context.Scores.Add(score);
-            //await _context.SaveChangesAsync();
-
-            return Ok();
+            
+            return Ok(score);
         }
 
        

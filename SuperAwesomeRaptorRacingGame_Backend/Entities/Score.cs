@@ -10,6 +10,6 @@ namespace SuperAwesomeRaptorRacingGame_Backend.Entities
         public int ScoreId { get; set; }
         public string TrackName { get; set; }
         public string Time { get; set; }
-        public virtual User User { get; set; }
+        public User User { get; set; }
     }
 }

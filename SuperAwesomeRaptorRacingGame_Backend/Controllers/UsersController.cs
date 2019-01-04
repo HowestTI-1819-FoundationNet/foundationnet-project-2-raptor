@@ -64,7 +64,7 @@ namespace SuperAwesomeRaptorRacingGame_Backend.Controllers
 
             // return basic user info (without password) and token to store client side
 
-            var scores = _scoreService.GetScoresForUser(user);
+            var scores = _scoreService.GetScoresForUser(user.UserId);
 
 
             return Ok(new

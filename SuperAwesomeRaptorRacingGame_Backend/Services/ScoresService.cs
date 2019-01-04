@@ -10,7 +10,7 @@ namespace SuperAwesomeRaptorRacingGame_Backend.Services
 
     public interface IScoreService
     {
-        ICollection<Score> GetScoresForUser(User user);
+        ICollection<Score> GetScoresForUser(int UserId);
         void AddScore(Score score);
 
     }
@@ -33,9 +33,9 @@ namespace SuperAwesomeRaptorRacingGame_Backend.Services
         }
 
 
-        public ICollection<Score> GetScoresForUser(User user)
+        public ICollection<Score> GetScoresForUser(int UserId)
         {
-            return _context.Scores.Where(score => score.User.UserId == user.UserId).ToList();
+            return _context.Scores.Where(score => score.User.UserId == UserId).ToList();
         }
     }
 }
