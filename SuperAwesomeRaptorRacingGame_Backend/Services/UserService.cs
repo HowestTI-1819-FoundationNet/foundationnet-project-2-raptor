@@ -78,7 +78,7 @@ namespace SuperAwesomeRaptorRacingGame_Backend.Services
 
         public void Update(User userParam, string password = null)
         {
-            var user = _context.Users.Find(userParam.Id);
+            var user = _context.Users.Find(userParam.UserId);
 
             if (user == null)
                 throw new AppException("User not found");

@@ -38,6 +38,7 @@ namespace SuperAwesomeRaptorRacingGame_Backend.Controllers
         [HttpPost("authenticate")]
         public IActionResult Authenticate([FromBody]UserDto userDto)
         {
+            /*
             var user = _userService.Authenticate(userDto.Username, userDto.Password);
 
             if (user == null)
@@ -57,14 +58,15 @@ namespace SuperAwesomeRaptorRacingGame_Backend.Controllers
             var token = tokenHandler.CreateToken(tokenDescriptor);
             var tokenString = tokenHandler.WriteToken(token);
 
+        */
             // return basic user info (without password) and token to store client side
             return Ok(new
             {
-                Id = user.Id,
-                Username = user.Username,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Token = tokenString
+                Id = 1,
+                Username = "Dennis@test.com",
+                FirstName = "dennis",
+                LastName = "morent",
+                Token = "a tokenized string"
             });
         }
 
@@ -110,7 +112,7 @@ namespace SuperAwesomeRaptorRacingGame_Backend.Controllers
         {
             // map dto to entity and set id
             var user = _mapper.Map<User>(userDto);
-            user.Id = id;
+            user.UserId = id;
 
             try
             {
