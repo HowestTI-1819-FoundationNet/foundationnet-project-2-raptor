@@ -7,7 +7,6 @@ namespace SuperAwesomeRaptorRacingGame_Backend.Entities
 {
     public class Score
     {
-
         public int ScoreId { get; set; }
         public string TrackName { get; set; }
         public string Time { get; set; }

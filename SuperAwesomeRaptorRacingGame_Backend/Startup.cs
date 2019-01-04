@@ -75,6 +75,7 @@ namespace SuperAwesomeRaptorRacingGame_Backend
 
             // configure DI for application services
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IScoreService, ScoreService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

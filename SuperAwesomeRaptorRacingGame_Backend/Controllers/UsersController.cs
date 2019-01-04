@@ -21,15 +21,18 @@ namespace SuperAwesomeRaptorRacingGame_Backend.Controllers
     public class UsersController : ControllerBase
     {
         private IUserService _userService;
+        private IScoreService _scoreService;
         private IMapper _mapper;
         private readonly AppSettings _appSettings;
 
         public UsersController (
             IUserService userService,
+            IScoreService scoreService,
             IMapper mapper,
             IOptions<AppSettings> appSettings)
         {
             _userService = userService;
+            _scoreService = scoreService;
             _mapper = mapper;
             _appSettings = appSettings.Value;
         }
@@ -38,7 +41,7 @@ namespace SuperAwesomeRaptorRacingGame_Backend.Controllers
         [HttpPost("authenticate")]
         public IActionResult Authenticate([FromBody]UserDto userDto)
         {
-            /*
+            
             var user = _userService.Authenticate(userDto.Username, userDto.Password);
 
             if (user == null)
@@ -50,7 +53,7 @@ namespace SuperAwesomeRaptorRacingGame_Backend.Controllers
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(ClaimTypes.Name, user.Id.ToString())
+                    new Claim(ClaimTypes.Name, user.UserId.ToString())
                 }),
                 Expires = DateTime.UtcNow.AddDays(7),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
@@ -58,15 +61,20 @@ namespace SuperAwesomeRaptorRacingGame_Backend.Controllers
             var token = tokenHandler.CreateToken(tokenDescriptor);
             var tokenString = tokenHandler.WriteToken(token);
 
-        */
+
             // return basic user info (without password) and token to store client side
+
+            var scores = _scoreService.GetScoresForUser(user);
+
+
             return Ok(new
             {
-                Id = 1,
-                Username = "Dennis@test.com",
-                FirstName = "dennis",
-                LastName = "morent",
-                Token = "a tokenized string"
+                UserId = user.UserId,
+                Username = user.Username,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Token = tokenString,
+                Scores = scores
             });
         }
 
