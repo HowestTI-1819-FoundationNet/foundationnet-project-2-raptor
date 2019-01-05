@@ -7,8 +7,9 @@ namespace SuperAwesomeRaptorRacingGame_Backend.Dtos
 {
     public class ScoreDto
     {
-        public int UserId { get; set; }
-        public int ScoreId { get; set; }
+        public string Username { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
         public string TrackName { get; set; }
         public string Time { get; set; }
     }

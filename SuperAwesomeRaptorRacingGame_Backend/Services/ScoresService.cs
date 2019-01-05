@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using SuperAwesomeRaptorRacingGame_Backend.Dtos;
 
 namespace SuperAwesomeRaptorRacingGame_Backend.Services
 {
@@ -11,6 +13,7 @@ namespace SuperAwesomeRaptorRacingGame_Backend.Services
     public interface IScoreService
     {
         ICollection<Score> GetScoresForUser(int UserId);
+        ICollection<ScoreDto> GetAllScores();
         void AddScore(Score score);
 
     }
@@ -37,5 +40,19 @@ namespace SuperAwesomeRaptorRacingGame_Backend.Services
         {
             return _context.Scores.Where(score => score.User.UserId == UserId).ToList();
         }
+
+        public ICollection<ScoreDto>GetAllScores()
+        {
+            return _context.Scores.Select(sc => new
+            ScoreDto
+            {
+                TrackName = sc.TrackName,
+                Time = sc.Time,
+                Username = sc.User.Username,
+                FirstName = sc.User.FirstName,
+                LastName = sc.User.LastName
+            }).ToList();
+        }
+
     }
 }
