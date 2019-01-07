@@ -12,6 +12,7 @@ namespace SuperAwesomeRaptorRacingGame_Backend.Services
         User Authenticate(string username, string password);
         IEnumerable<User> GetAll();
         User GetById(int id);
+        User GetByUsername(string username);
         User Create(User user, string password);
         void Update(User user, string password = null);
         void Delete(int id);
@@ -55,6 +56,11 @@ namespace SuperAwesomeRaptorRacingGame_Backend.Services
             return _context.Users.Find(id);
         }
 
+        public User GetByUsername(string username)
+        {
+            return _context.Users.Where(u => u.Username == username).FirstOrDefault();
+        }
+
         public User Create(User user, string password)
         {
             // validation
@@ -78,7 +84,7 @@ namespace SuperAwesomeRaptorRacingGame_Backend.Services
 
         public void Update(User userParam, string password = null)
         {
-            var user = _context.Users.Find(userParam.Id);
+            var user = _context.Users.Find(userParam.UserId);
 
             if (user == null)
                 throw new AppException("User not found");
