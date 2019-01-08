@@ -1,4 +1,5 @@
-﻿using SuperAwesomeRaptorRacingGame_Backend.Entities;
+﻿using SuperAwesomeRaptorRacingGame_Backend.Dtos;
+using SuperAwesomeRaptorRacingGame_Backend.Entities;
 using SuperAwesomeRaptorRacingGame_Backend.Helpers;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ namespace SuperAwesomeRaptorRacingGame_Backend.Services
 {
     public interface IUserService
     {
-        User Authenticate(string username, string password);
+        UserDto Authenticate(string username, string password);
         IEnumerable<User> GetAll();
         User GetById(int id);
         User GetByUsername(string username);
@@ -27,10 +28,11 @@ namespace SuperAwesomeRaptorRacingGame_Backend.Services
             _context = context;
         }
 
-        public User Authenticate(string username, string password)
+        public UserDto Authenticate(string username, string password)
         {
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
                 return null;
+          
 
             var user = _context.Users.SingleOrDefault(x => x.Username == username);
 
@@ -43,7 +45,22 @@ namespace SuperAwesomeRaptorRacingGame_Backend.Services
                 return null;
 
             // authentication successful
-            return user;
+
+            var userDto = _context.Users.Where(u => u.Username == username).Select(us => new UserDto
+            {
+                UserId = us.UserId,
+                Username = us.Username,
+                FirstName = us.FirstName,
+                LastName = us.LastName,
+                Scores = us.Scores.Where(score => score.User.UserId == us.UserId).Select(sc => new UserScoreDto
+                {
+                    TrackName = sc.TrackName,
+                    Time = sc.Time,
+                }).OrderBy(t => t.Time).ToList()
+            }).SingleOrDefault();
+
+            // return custom userDto
+            return userDto;
         }
 
         public IEnumerable<User> GetAll()

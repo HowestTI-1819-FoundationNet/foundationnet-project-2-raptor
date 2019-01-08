@@ -12,7 +12,7 @@ namespace SuperAwesomeRaptorRacingGame_Backend.Services
 
     public interface IScoreService
     {
-        ICollection<Score> GetScoresForUser(int UserId);
+        ICollection<ScoreDto> GetScoresForUser(int UserId);
         Task<ICollection<ScoreDto>> GetAllScores();
         Task AddScore(Score score);
 
@@ -35,9 +35,16 @@ namespace SuperAwesomeRaptorRacingGame_Backend.Services
         }
 
 
-        public ICollection<Score> GetScoresForUser(int UserId)
+        public ICollection<ScoreDto> GetScoresForUser(int UserId)
         {
-            return _context.Scores.Where(score => score.User.UserId == UserId).ToList();
+            return _context.Scores.Where(score => score.User.UserId == UserId).Select(sc => new ScoreDto
+            {
+                TrackName = sc.TrackName,
+                Time = sc.Time,
+                Username = sc.User.Username,
+                FirstName = sc.User.FirstName,
+                LastName = sc.User.LastName
+            }).ToList();
         }
 
         public async Task<ICollection<ScoreDto>>GetAllScores()

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SuperAwesomeRaptorRacingGame_Backend.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,6 +13,8 @@ namespace SuperAwesomeRaptorRacingGame_Backend.Dtos
         public string LastName { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
+        public string Token { get; set; }
+        public ICollection<UserScoreDto> Scores { get; set; }
     }
 
 
