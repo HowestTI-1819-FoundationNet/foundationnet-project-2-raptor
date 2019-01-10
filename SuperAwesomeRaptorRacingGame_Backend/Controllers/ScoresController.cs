@@ -95,7 +95,7 @@ namespace SuperAwesomeRaptorRacingGame_Backend.Controllers
 
             // map dto to entity
             var score = _mapper.Map<Score>(scoreDto);
-            var user = _userService.GetByUsername(scoreDto.User.Username); // recheck
+            var user = _userService.GetByUsername(scoreDto.Username);
             score.User = user;
             _scoreService.AddScore(score);
             
