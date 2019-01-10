@@ -54,15 +54,15 @@ namespace SuperAwesomeRaptorRacingGame_Backend.Services
             return await _context.Scores.Select(sc => new
             ScoreDto
             {
-              TrackName = sc.TrackName,
-              Time = sc.Time,
-              User = new ScoreUserDto
+                TrackName = sc.TrackName,
+                Time = sc.Time,
+                User = new ScoreUserDto
                 {
                     FirstName = sc.User.FirstName,
                     LastName = sc.User.LastName,
                     Username = sc.User.Username
                 }
-            }).ToListAsync();
+            }).OrderBy(scd => scd.Time).ToListAsync();
         }
 
     }
