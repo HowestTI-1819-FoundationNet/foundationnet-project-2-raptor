@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 
 namespace SuperAwesomeRaptorRacingGame_Backend.Dtos
 {
-    public class ScoreDto
+    public class ScoreUserDto
     {
-        public ScoreUserDto User { get; set; }
-        public string TrackName { get; set; }
-        public string Time { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Username { get; set; }
     }
 }

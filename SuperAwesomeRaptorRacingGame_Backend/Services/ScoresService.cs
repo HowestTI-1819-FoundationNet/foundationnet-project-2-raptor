@@ -41,9 +41,11 @@ namespace SuperAwesomeRaptorRacingGame_Backend.Services
             {
                 TrackName = sc.TrackName,
                 Time = sc.Time,
-                Username = sc.User.Username,
-                FirstName = sc.User.FirstName,
-                LastName = sc.User.LastName
+                User = new ScoreUserDto {
+                    FirstName = sc.User.FirstName,
+                    LastName = sc.User.LastName,
+                    Username  = sc.User.Username
+                }
             }).ToList();
         }
 
@@ -52,11 +54,14 @@ namespace SuperAwesomeRaptorRacingGame_Backend.Services
             return await _context.Scores.Select(sc => new
             ScoreDto
             {
-                TrackName = sc.TrackName,
-                Time = sc.Time,
-                Username = sc.User.Username,
-                FirstName = sc.User.FirstName,
-                LastName = sc.User.LastName
+              TrackName = sc.TrackName,
+              Time = sc.Time,
+              User = new ScoreUserDto
+                {
+                    FirstName = sc.User.FirstName,
+                    LastName = sc.User.LastName,
+                    Username = sc.User.Username
+                }
             }).ToListAsync();
         }
 

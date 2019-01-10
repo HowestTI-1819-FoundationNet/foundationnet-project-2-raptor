@@ -65,7 +65,7 @@ namespace SuperAwesomeRaptorRacingGame_Backend.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var scores = _scoreService.GetAllScores();
+            var scores = await _scoreService.GetAllScores();
             return Ok(scores);
         }
 
@@ -95,7 +95,7 @@ namespace SuperAwesomeRaptorRacingGame_Backend.Controllers
 
             // map dto to entity
             var score = _mapper.Map<Score>(scoreDto);
-            var user = _userService.GetByUsername(scoreDto.Username);
+            var user = _userService.GetByUsername(scoreDto.User.Username); // recheck
             score.User = user;
             _scoreService.AddScore(score);
             

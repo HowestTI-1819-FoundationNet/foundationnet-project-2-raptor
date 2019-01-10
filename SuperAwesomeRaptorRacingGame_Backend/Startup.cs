@@ -12,6 +12,8 @@ using SuperAwesomeRaptorRacingGame_Backend.Helpers;
 using AutoMapper;
 using SuperAwesomeRaptorRacingGame_Backend.Services;
 
+
+
 namespace SuperAwesomeRaptorRacingGame_Backend
 {
     public class Startup
@@ -30,7 +32,10 @@ namespace SuperAwesomeRaptorRacingGame_Backend
             services.AddCors();
             services.AddDbContext<DataContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("Raptor-db")));
-            services.AddMvc().AddControllersAsServices();
+            services.AddMvc().AddControllersAsServices().AddJsonOptions(
+            options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+        );
+
             services.AddAutoMapper();
    
             // configure strongly typed settings objects
@@ -76,6 +81,7 @@ namespace SuperAwesomeRaptorRacingGame_Backend
             // configure DI for application services
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IScoreService, ScoreService>();
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
