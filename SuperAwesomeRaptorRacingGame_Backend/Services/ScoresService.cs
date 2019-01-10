@@ -15,7 +15,7 @@ namespace SuperAwesomeRaptorRacingGame_Backend.Services
         Task<ICollection<ScoreDto>> GetScoresForUser(int UserId);
         Task<ICollection<ScoreDto>> GetAllScores();
         Task AddScore(Score score);
-
+        Task<Score> GetScoreById(int id);
     }
 
     public class ScoreService : IScoreService
@@ -58,6 +58,11 @@ namespace SuperAwesomeRaptorRacingGame_Backend.Services
                 LastName = sc.User.LastName,
                 Username = sc.User.Username
             }).OrderBy(scd => scd.Time).ToListAsync();
+        }
+
+        public async Task<Score> GetScoreById(int id) {
+
+            return await _context.Scores.FindAsync(id);
         }
 
     }

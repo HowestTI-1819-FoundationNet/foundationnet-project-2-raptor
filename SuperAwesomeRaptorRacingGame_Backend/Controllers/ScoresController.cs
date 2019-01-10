@@ -48,14 +48,14 @@ namespace SuperAwesomeRaptorRacingGame_Backend.Controllers
                 return BadRequest(ModelState);
             }
 
-           // var score = await _context.Scores.FindAsync(id);
+            var score = await _scoreService.GetScoreById(id);
 
-          //  if (score == null)
-         //   {
+            if (score == null)
+           {
                 return NotFound();
-         //   }
+          }
 
-          //  return Ok(score);
+          return Ok(score);
         }
 
         [HttpGet]
@@ -77,7 +77,7 @@ namespace SuperAwesomeRaptorRacingGame_Backend.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var scores = _scoreService.GetScoresForUser(uid);
+            var scores = await _scoreService.GetScoresForUser(uid);
             return Ok(scores);
         }
 
