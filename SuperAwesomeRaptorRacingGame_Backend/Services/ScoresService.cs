@@ -16,6 +16,7 @@ namespace SuperAwesomeRaptorRacingGame_Backend.Services
         Task<ICollection<ScoreDto>> GetAllScores();
         Task AddScore(Score score);
         Task<Score> GetScoreById(int id);
+        Task<string> GetTopScoreByTrack(string TrackName);
     }
 
     public class ScoreService : IScoreService
@@ -64,6 +65,18 @@ namespace SuperAwesomeRaptorRacingGame_Backend.Services
 
             return await _context.Scores.FindAsync(id);
         }
+
+        public async Task<string> GetTopScoreByTrack(string TrackName)
+        {
+
+            var topScore = await _context.Scores.Where(score => score.TrackName == TrackName).Select(sc => new ScoreDto
+            {
+                Time = sc.Time,
+            }).OrderBy(scd => scd.Time).FirstOrDefaultAsync();
+            return topScore.Time;
+
+        }
+
 
     }
 }

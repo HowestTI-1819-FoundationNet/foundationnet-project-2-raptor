@@ -58,6 +58,25 @@ namespace SuperAwesomeRaptorRacingGame_Backend.Controllers
           return Ok(score);
         }
 
+        // GET: api/Scores/top/Racetrack01
+        [HttpGet("top/{trackName}")]
+        public async Task<IActionResult> GetTopScoreForTrack([FromRoute] string trackName)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var topScoreForTrack = await _scoreService.GetTopScoreByTrack(trackName);
+
+            if (topScoreForTrack == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(topScoreForTrack);
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetAllScores()
         {
