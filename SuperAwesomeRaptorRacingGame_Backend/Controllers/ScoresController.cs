@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using SuperAwesomeRaptorRacingGame_Backend.Dtos;
 using SuperAwesomeRaptorRacingGame_Backend.Entities;
@@ -77,7 +72,7 @@ namespace SuperAwesomeRaptorRacingGame_Backend.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
+        [AllowAnonymous] // front end needs a list without a JWT token
         public async Task<IActionResult> GetAllScores()
         {
             if (!ModelState.IsValid)
@@ -101,7 +96,6 @@ namespace SuperAwesomeRaptorRacingGame_Backend.Controllers
         }
 
 
-
         // POST: api/Scores
         [HttpPost]
         public IActionResult PostScore([FromBody] ScoreDto scoreDto)
@@ -115,8 +109,7 @@ namespace SuperAwesomeRaptorRacingGame_Backend.Controllers
             var score = _mapper.Map<Score>(scoreDto);
             var user = _userService.GetByUsername(scoreDto.Username);
             score.User = user;
-            _scoreService.AddScore(score);
-            
+            _scoreService.AddScore(score);            
             return Ok(score);
         }
 
