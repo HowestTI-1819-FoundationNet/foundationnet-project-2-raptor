@@ -16,6 +16,7 @@ using SuperAwesomeRaptorRacingGame_Backend.Services;
 namespace SuperAwesomeRaptorRacingGame_Backend.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
     public class ScoresController : ControllerBase
     {

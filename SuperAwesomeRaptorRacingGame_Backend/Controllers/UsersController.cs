@@ -99,7 +99,7 @@ namespace SuperAwesomeRaptorRacingGame_Backend.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous] // turn off when implemented 
+      
         public IActionResult GetAll()
         {
             var users = _userService.GetAll();
