@@ -2,10 +2,12 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Options;
 using SuperAwesomeRaptorRacingGame_Backend.Dtos;
 using SuperAwesomeRaptorRacingGame_Backend.Entities;
 using SuperAwesomeRaptorRacingGame_Backend.Helpers;
+using SuperAwesomeRaptorRacingGame_Backend.Hubs;
 using SuperAwesomeRaptorRacingGame_Backend.Services;
 
 namespace SuperAwesomeRaptorRacingGame_Backend.Controllers
@@ -19,17 +21,20 @@ namespace SuperAwesomeRaptorRacingGame_Backend.Controllers
         private IScoreService _scoreService;
         private IMapper _mapper;
         private readonly AppSettings _appSettings;
+        private IHubContext<ScoresNotifyHub> _hubContext;
 
         public ScoresController(
             IScoreService scoreService,
             IUserService userService,
             IMapper mapper,
-            IOptions<AppSettings> appSettings)
+            IOptions<AppSettings> appSettings,
+            IHubContext<ScoresNotifyHub> hubContext)
         {
             _userService = userService;
             _scoreService = scoreService;
             _mapper = mapper;
             _appSettings = appSettings.Value;
+            _hubContext = hubContext;
         }
 
 
@@ -98,7 +103,7 @@ namespace SuperAwesomeRaptorRacingGame_Backend.Controllers
 
         // POST: api/Scores
         [HttpPost]
-        public IActionResult PostScore([FromBody] ScoreDto scoreDto)
+        public async Task<IActionResult> PostScore([FromBody] ScoreDto scoreDto)
         {
             if (!ModelState.IsValid)
             {
@@ -109,7 +114,8 @@ namespace SuperAwesomeRaptorRacingGame_Backend.Controllers
             var score = _mapper.Map<Score>(scoreDto);
             var user = _userService.GetByUsername(scoreDto.Username);
             score.User = user;
-            _scoreService.AddScore(score);            
+            await _scoreService.AddScore(score);
+            await _hubContext.Clients.All.SendAsync("scoresUpdate", scoreDto);
             return Ok(score);
         }
 

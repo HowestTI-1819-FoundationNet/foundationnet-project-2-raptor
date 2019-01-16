@@ -11,8 +11,7 @@ using Microsoft.IdentityModel.Tokens;
 using SuperAwesomeRaptorRacingGame_Backend.Helpers;
 using AutoMapper;
 using SuperAwesomeRaptorRacingGame_Backend.Services;
-
-
+using SuperAwesomeRaptorRacingGame_Backend.Hubs;
 
 namespace SuperAwesomeRaptorRacingGame_Backend
 {
@@ -81,7 +80,8 @@ namespace SuperAwesomeRaptorRacingGame_Backend
             // configure DI for application services
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IScoreService, ScoreService>();
-            
+            services.AddSignalR();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -103,6 +103,10 @@ namespace SuperAwesomeRaptorRacingGame_Backend
               .AllowCredentials());
 
             app.UseAuthentication();
+            app.UseSignalR(routes =>
+            {
+                routes.MapHub<ScoresNotifyHub>("/scores");
+            });
             app.UseMvc();
 
 

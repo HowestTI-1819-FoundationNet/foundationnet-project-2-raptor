@@ -98,8 +98,8 @@ namespace SuperAwesomeRaptorRacingGame_Backend.Controllers
             }
         }
 
+        [AllowAnonymous] // front end needs a list of users without a JWT token
         [HttpGet]
-      
         public IActionResult GetAll()
         {
             var users = _userService.GetAll();
