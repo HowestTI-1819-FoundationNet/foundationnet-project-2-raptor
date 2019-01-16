@@ -38,8 +38,6 @@ namespace SuperAwesomeRaptorRacingGame_Backend.Controllers
         }
 
 
-
-
         // GET: api/Scores/5
         [HttpGet("{id}")]
         public async Task<IActionResult> GetScore([FromRoute] int id)
@@ -79,6 +77,7 @@ namespace SuperAwesomeRaptorRacingGame_Backend.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAllScores()
         {
             if (!ModelState.IsValid)
@@ -91,7 +90,7 @@ namespace SuperAwesomeRaptorRacingGame_Backend.Controllers
 
 
         [HttpGet("uid/{uid}")]
-        public async Task<IActionResult> getScoresByUserId([FromRoute] int uid)
+        public async Task<IActionResult> GetScoresByUserId([FromRoute] int uid)
         {
             if (!ModelState.IsValid)
             {
@@ -104,7 +103,6 @@ namespace SuperAwesomeRaptorRacingGame_Backend.Controllers
 
 
         // POST: api/Scores
-        [AllowAnonymous]
         [HttpPost]
         public IActionResult PostScore([FromBody] ScoreDto scoreDto)
         {
