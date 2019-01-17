@@ -12,7 +12,6 @@ namespace SuperAwesomeRaptorRacingGame_Backend.Helpers
             CreateMap<UserDto, User>();
             CreateMap<Score, ScoreDto>();
             CreateMap<ScoreDto, Score>();
-
         }
     }
 }

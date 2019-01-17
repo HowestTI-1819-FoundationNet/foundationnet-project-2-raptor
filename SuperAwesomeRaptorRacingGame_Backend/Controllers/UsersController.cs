@@ -20,52 +20,43 @@ namespace SuperAwesomeRaptorRacingGame_Backend.Controllers
     [Route("api/[controller]")]
     public class UsersController : ControllerBase
     {
-        private IUserService _userService;
-        private IScoreService _scoreService;
-        private IMapper _mapper;
         private readonly AppSettings _appSettings;
+        private readonly IMapper _mapper;
+        private readonly IUserRepository _userRepository;
 
-        public UsersController (
-            IUserService userService,
-            IScoreService scoreService,
+        public UsersController(
+            IUserRepository userRepository,
             IMapper mapper,
             IOptions<AppSettings> appSettings)
         {
-            _userService = userService;
-            _scoreService = scoreService;
+            _userRepository = userRepository;
             _mapper = mapper;
             _appSettings = appSettings.Value;
         }
 
         [AllowAnonymous]
         [HttpPost("authenticate")]
-        public IActionResult Authenticate([FromBody]UserDto userDto)
+        public IActionResult Authenticate([FromBody] UserDto userDto)
         {
-            
-            var user = _userService.Authenticate(userDto.Username, userDto.Password);
+            var user = _userRepository.Authenticate(userDto.Username, userDto.Password);
 
             if (user == null)
-                return BadRequest(new { message = "Username or password is incorrect" });
+                return BadRequest(new {message = "Username or password is incorrect"});
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new Claim[]
+                Subject = new ClaimsIdentity(new[]
                 {
                     new Claim(ClaimTypes.Name, user.UserId.ToString())
                 }),
                 Expires = DateTime.UtcNow.AddDays(7),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),
+                    SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
             var tokenString = tokenHandler.WriteToken(token);
-
-
-            // return basic user info (without password) and token to store client side
-
-            //var scores = _scoreService.GetScoresForUser(user.UserId);
-
 
             return Ok(new UserDto
             {
@@ -80,7 +71,7 @@ namespace SuperAwesomeRaptorRacingGame_Backend.Controllers
 
         [AllowAnonymous]
         [HttpPost("register")]
-        public IActionResult Register([FromBody]UserDto userDto)
+        public IActionResult Register([FromBody] UserDto userDto)
         {
             // map dto to entity
             var user = _mapper.Map<User>(userDto);
@@ -88,13 +79,13 @@ namespace SuperAwesomeRaptorRacingGame_Backend.Controllers
             try
             {
                 // save 
-                _userService.Create(user, userDto.Password);
+                _userRepository.Create(user, userDto.Password);
                 return Ok();
             }
             catch (AppException ex)
             {
                 // return error message if there was an exception
-                return BadRequest(new { message = ex.Message });
+                return BadRequest(new {message = ex.Message});
             }
         }
 
@@ -102,7 +93,7 @@ namespace SuperAwesomeRaptorRacingGame_Backend.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            var users = _userService.GetAll();
+            var users = _userRepository.GetAll();
             var userDtos = _mapper.Map<IList<UserDto>>(users);
             return Ok(userDtos);
         }
@@ -110,13 +101,13 @@ namespace SuperAwesomeRaptorRacingGame_Backend.Controllers
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
-            var user = _userService.GetById(id);
+            var user = _userRepository.GetById(id);
             var userDto = _mapper.Map<UserDto>(user);
             return Ok(userDto);
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(int id, [FromBody]UserDto userDto)
+        public IActionResult Update(int id, [FromBody] UserDto userDto)
         {
             // map dto to entity and set id
             var user = _mapper.Map<User>(userDto);
@@ -125,20 +116,20 @@ namespace SuperAwesomeRaptorRacingGame_Backend.Controllers
             try
             {
                 // save 
-                _userService.Update(user, userDto.Password);
+                _userRepository.Update(user, userDto.Password);
                 return Ok();
             }
             catch (AppException ex)
             {
                 // return error message if there was an exception
-                return BadRequest(new { message = ex.Message });
+                return BadRequest(new {message = ex.Message});
             }
         }
 
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            _userService.Delete(id);
+            _userRepository.Delete(id);
             return Ok();
         }
     }

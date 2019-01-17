@@ -17,21 +17,21 @@ namespace SuperAwesomeRaptorRacingGame_Backend.Controllers
     [ApiController]
     public class ScoresController : ControllerBase
     {
-        private IUserService _userService;
-        private IScoreService _scoreService;
-        private IMapper _mapper;
         private readonly AppSettings _appSettings;
-        private IHubContext<ScoresNotifyHub> _hubContext;
+        private readonly IHubContext<ScoresNotifyHub> _hubContext;
+        private readonly IMapper _mapper;
+        private readonly IScoreRepository _scoreRepository;
+        private readonly IUserRepository _userRepository;
 
         public ScoresController(
-            IScoreService scoreService,
-            IUserService userService,
+            IScoreRepository scoreRepository,
+            IUserRepository userRepository,
             IMapper mapper,
             IOptions<AppSettings> appSettings,
             IHubContext<ScoresNotifyHub> hubContext)
         {
-            _userService = userService;
-            _scoreService = scoreService;
+            _userRepository = userRepository;
+            _scoreRepository = scoreRepository;
             _mapper = mapper;
             _appSettings = appSettings.Value;
             _hubContext = hubContext;
@@ -42,36 +42,24 @@ namespace SuperAwesomeRaptorRacingGame_Backend.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetScore([FromRoute] int id)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var score = await _scoreService.GetScoreById(id);
+            var score = await _scoreRepository.GetScoreById(id);
 
-            if (score == null)
-           {
-                return NotFound();
-          }
+            if (score == null) return NotFound();
 
-          return Ok(score);
+            return Ok(score);
         }
 
         // GET: api/Scores/top/Racetrack01
         [HttpGet("top/{trackName}")]
         public async Task<IActionResult> GetTopScoreForTrack([FromRoute] string trackName)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var topScoreForTrack = await _scoreService.GetTopScoreByTrack(trackName);
+            var topScoreForTrack = await _scoreRepository.GetTopScoreByTrack(trackName);
 
-            if (topScoreForTrack == null)
-            {
-                return NotFound();
-            }
+            if (topScoreForTrack == null) return NotFound();
 
             return Ok(topScoreForTrack);
         }
@@ -80,11 +68,8 @@ namespace SuperAwesomeRaptorRacingGame_Backend.Controllers
         [AllowAnonymous] // front end needs a list without a JWT token
         public async Task<IActionResult> GetAllScores()
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            var scores = await _scoreService.GetAllScores();
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            var scores = await _scoreRepository.GetAllScores();
             return Ok(scores);
         }
 
@@ -92,11 +77,8 @@ namespace SuperAwesomeRaptorRacingGame_Backend.Controllers
         [HttpGet("uid/{uid}")]
         public async Task<IActionResult> GetScoresByUserId([FromRoute] int uid)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            var scores = await _scoreService.GetScoresForUser(uid);
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            var scores = await _scoreRepository.GetScoresForUser(uid);
             return Ok(scores);
         }
 
@@ -105,20 +87,15 @@ namespace SuperAwesomeRaptorRacingGame_Backend.Controllers
         [HttpPost]
         public async Task<IActionResult> PostScore([FromBody] ScoreDto scoreDto)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
             // map dto to entity
             var score = _mapper.Map<Score>(scoreDto);
-            var user = _userService.GetByUsername(scoreDto.Username);
+            var user = _userRepository.GetByUsername(scoreDto.Username);
             score.User = user;
-            await _scoreService.AddScore(score);
+            await _scoreRepository.AddScore(score);
             await _hubContext.Clients.All.SendAsync("scoresUpdate", scoreDto);
             return Ok(score);
         }
-
-       
     }
 }
